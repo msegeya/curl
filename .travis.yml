@@ -1,5 +1,9 @@
 language: c
 sudo: required
+cache:
+    directories:
+        - $HOME/libpsl-0.20.1
+
 addons:
     apt:
         config:
@@ -123,22 +127,40 @@ before_script:
                   sudo make install
               )
           fi
-          if [ "$TRAVIS_OS_NAME" = linux -a "$BORINGSSL" ]; then
-            (cd $HOME &&
-            git clone --depth=1 https://boringssl.googlesource.com/boringssl &&
-            cd boringssl &&
-            mkdir build &&
-            cd build &&
-            cmake -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=1 .. &&
-            make &&
-            cd .. &&
-            mkdir lib &&
-            cd lib &&
-            ln -s ../build/crypto/libcrypto.so . &&
-            ln -s ../build/ssl/libssl.so . &&
-            echo "BoringSSL lib dir: "`pwd` &&
-            export LIBS=-lpthread )
-          fi
+    - |
+      if [ "$TRAVIS_OS_NAME" = linux -a "$BORINGSSL" ]; then
+        (cd $HOME &&
+        git clone --depth=1 https://boringssl.googlesource.com/boringssl &&
+        cd boringssl &&
+        mkdir build &&
+        cd build &&
+        cmake -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=1 .. &&
+        make &&
+        cd .. &&
+        mkdir lib &&
+        cd lib &&
+        ln -s ../build/crypto/libcrypto.so . &&
+        ln -s ../build/ssl/libssl.so . &&
+        echo "BoringSSL lib dir: "`pwd` &&
+        export LIBS=-lpthread )
+      fi
+    - |
+      if [ $TRAVIS_OS_NAME = linux ]; then
+        if [ ! -e $HOME/libpsl-0.20.1/Makefile ]; then
+          (cd $HOME && \
+          curl -O https://github.com/rockdaboot/libpsl/releases/download/libpsl-0.20.1/libpsl-0.20.1.tar.gz && \
+          tar -xzf libpsl-0.20.1.tar.gz && \
+          cd libpsl-0.20.1 && \
+          sh autogen.sh && \
+          ./configure && \
+          make && \
+          make check)
+        fi
+      fi
+    - |
+      if [ $TRAVIS_OS_NAME = linux ]; then
+        (cd $HOME/libpsl-0.20.1 && sudo make install)
+      fi
 
 script:
     - |
