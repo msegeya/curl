@@ -3,6 +3,7 @@ sudo: required
 cache:
     directories:
         - $HOME/libpsl-0.20.1
+        - $HOME/libidn2-2.0.4
 
 addons:
     apt:
@@ -27,6 +28,7 @@ addons:
             - libssh-dev
             - krb5-user
             - autopoint  # for libpsl that needs autoreconf that uses gettext that needs it
+            - libunistring-dev # for libidn2 neeed by libpsl
 
 matrix:
     include:
@@ -147,6 +149,17 @@ before_script:
       fi
     - |
       if [ $TRAVIS_OS_NAME = linux ]; then
+        if [ ! -e $HOME/libidn2-2.0.4/Makefile ]; then
+          (cd $HOME && \
+          curl -LO https://ftp.gnu.org/gnu/libidn/libidn2-2.0.4.tar.gz && \
+          tar -xzf libidn2-2.0.4.tar.gz && \
+          cd libidn2-2.0.4 && \
+          ./configure && \
+          make)
+        fi
+      fi
+    - |
+      if [ $TRAVIS_OS_NAME = linux ]; then
         if [ ! -e $HOME/libpsl-0.20.1/Makefile ]; then
           (cd $HOME && \
           curl -LO https://github.com/rockdaboot/libpsl/releases/download/libpsl-0.20.1/libpsl-0.20.1.tar.gz && \
@@ -159,6 +172,7 @@ before_script:
       fi
     - |
       if [ $TRAVIS_OS_NAME = linux ]; then
+        (cd $HOME/libidn2-2.0.4 && sudo make install)
         (cd $HOME/libpsl-0.20.1 && sudo make install)
       fi
 
