@@ -151,10 +151,9 @@ before_script:
           curl -LO https://github.com/rockdaboot/libpsl/releases/download/libpsl-0.20.1/libpsl-0.20.1.tar.gz && \
           tar -xzf libpsl-0.20.1.tar.gz && \
           cd libpsl-0.20.1 && \
-          sh autogen.sh && \
+          autoreconf -i && \
           ./configure && \
-          make && \
-          make check)
+          make)
         fi
       fi
     - |
