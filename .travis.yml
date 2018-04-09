@@ -6,7 +6,7 @@ addons:
             retries: true
         sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.9
+            - llvm-toolchain-trusty-6.0
         packages:
             - cmake
             - gcc-6
