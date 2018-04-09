@@ -9,13 +9,13 @@ addons:
             - llvm-toolchain-trusty-6.0
         packages:
             - cmake
-            - gcc-6
+            - gcc-7
             - lcov
-            - clang-3.9
+            - clang-6.0
             - valgrind
             - libev-dev
             - libc-ares-dev
-            - g++-6
+            - g++-7
             - libstdc++-6-dev
             - stunnel4
             - libidn2-0-dev
