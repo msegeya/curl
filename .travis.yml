@@ -26,6 +26,7 @@ addons:
             - libssh2-1-dev
             - libssh-dev
             - krb5-user
+            - gettext  # for libpsl that needs autoreconf that uses gettext
 
 matrix:
     include:
